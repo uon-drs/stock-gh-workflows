@@ -1,0 +1,27 @@
+# This workflow is intended for releasing C#/.NET packages to Nuget.
+
+name: Release Package to Nuget
+
+on:
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3.5.3
+
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v3.2.0
+        with:
+          dotnet-version: '8.x'
+
+      - name: Pack for NuGet
+        run: dotnet pack -c Release -o .
+
+      - name: Publish to NuGet
+        run: >-
+          dotnet nuget push *.nupkg 
+          --api-key ${{secrets.NUGET_PUBLISH_KEY}}
+          --source https://api.nuget.org/v3/index.json
