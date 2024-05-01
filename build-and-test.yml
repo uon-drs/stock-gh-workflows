@@ -1,0 +1,43 @@
+# This workflow is intended to be used for building and testing
+# C#/.NET apps on pull requests targeting `main`
+
+name: Build RquestBridge
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - App/** # trigger on changes to the app
+      - App.Tests/** # trigger on changes to the test code
+      - .github/workflows/build-and-test.yml # trigger on changes to this file
+
+env:
+  # Configure these
+  CI_build-config: release
+  CI_dotnet-version: 8.0.x
+  CI_project: ./App/App.csproj
+  CI_test_project: ./App.Tests/App.Tests.csproj
+
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_NOLOGO: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.CI_dotnet-version }}
+      - name: dotnet build
+        run: >-
+          dotnet build
+          ${{ env.CI_project }}
+          -c ${{ env.CI_build-config }}
+      - name: Run RquestBridge Tests
+        run: >-
+            dotnet test
+            ${{ env.CI_test_project }}
+            -c ${{ env.CI_build-config }}
