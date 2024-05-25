@@ -1,5 +1,5 @@
 # This workflow is intended to be used for publishing
-# C#/.NET apps on merging to `main`.
+# docker images on merging to `main`.
 #
 # These releases will be tagged with the SHA of the merge commit.
 #
