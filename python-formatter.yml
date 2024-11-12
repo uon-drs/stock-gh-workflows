@@ -1,0 +1,21 @@
+# This workflow is intended for checking the formatting of Python
+# to make it more readable. This workflow uses `black` to check
+# the formatting. If this test fails, you should run `black` on your code.
+name: Format Python Code with Black
+
+on:
+  - pull_request
+
+jobs:
+  format_python_code:
+   runs-on: ubuntu-latest
+   steps:
+     - uses: actions/checkout@v4
+       with:
+         submodules: 'recursive'
+         ref: ${{ github.ref }}
+     - name: Blacken Python code
+       uses: jpetrucciani/black-check@master
+       with:
+         path: '.'
+         black_flags: '--safe --verbose --diff'
